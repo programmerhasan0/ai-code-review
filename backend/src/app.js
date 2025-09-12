@@ -10,6 +10,7 @@
  */
 
 const express = require("express");
+const aiRoutes = require("./routes/ai.route");
 
 const app = express();
 const port = 3000;
@@ -17,5 +18,7 @@ const port = 3000;
 app.get("/", (req, res) => {
     res.send("Server Running Properly");
 });
+
+app.use("/ai", aiRoutes);
 
 module.exports = { app, port };

@@ -9,6 +9,7 @@
  *
  */
 
+require("dotenv").config();
 const { app, port } = require("./src/app");
 
 app.listen(port, () => {
