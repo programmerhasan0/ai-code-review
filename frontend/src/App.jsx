@@ -10,7 +10,11 @@
  */
 
 import "./App.css";
+import axios from "axios";
 import Editor from "react-simple-code-editor";
+import Markdown from "react-markdown";
+import reHypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 import "prismjs/themes/prism-tomorrow.css";
 import Prism from "prismjs";
 
@@ -22,6 +26,15 @@ function App() {
     return a + b;
 }
 `);
+    const [review, setReview] = useState("");
+
+    const reviewCode = async () => {
+        const response = await axios.post(
+            `http://localhost:3000/ai/get-review`,
+            { code }
+        );
+        setReview(response.data);
+    };
 
     useEffect(() => {
         Prism.highlightAll();
@@ -55,9 +68,15 @@ function App() {
                             }}
                         />
                     </div>
-                    <div className="review">Review</div>
+                    <div className="review" onClick={reviewCode}>
+                        Review
+                    </div>
                 </div>
-                <div className="right"></div>
+                <div className="right">
+                    <Markdown rehypePlugins={[reHypeHighlight]}>
+                        {review}
+                    </Markdown>
+                </div>
             </main>
         </>
     );
