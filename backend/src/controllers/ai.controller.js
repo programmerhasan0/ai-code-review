@@ -11,14 +11,14 @@
 
 const aiService = require("../services/ai.service");
 
-const getResponse = async (req, res) => {
-    const prompt = req.query.prompt;
+const getReview = async (req, res) => {
+    const code = req.body.code;
 
-    if (!prompt) return res.status(400).send("prompt is required");
+    if (!code) return res.status(400).send("code is required");
 
-    const response = await aiService(prompt);
+    const response = await aiService(code);
 
     res.send(response);
 };
 
-module.exports.getResponse = getResponse;
+module.exports.getReview = getReview;

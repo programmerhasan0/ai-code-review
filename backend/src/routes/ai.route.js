@@ -10,8 +10,8 @@
  */
 
 const router = require("express").Router();
-const { getResponse } = require("../controllers/ai.controller");
+const { getReview } = require("../controllers/ai.controller");
 
-router.get("/get-response", getResponse);
+router.post("/get-review", getReview);
 
 module.exports = router;
