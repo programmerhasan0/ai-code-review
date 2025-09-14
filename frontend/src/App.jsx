@@ -11,15 +11,13 @@
 
 import "./App.css";
 import axios from "axios";
-import Editor from "react-simple-code-editor";
-import Markdown from "react-markdown";
-import reHypeHighlight from "rehype-highlight";
+
 import "highlight.js/styles/github-dark.css";
-import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css";
-import "prismjs/components/prism-jsx";
+
 import { useState } from "react";
-import { BarLoader } from "react-spinners";
+
+import EditorArea from "./components/EditorArea.comp";
+import ReviewArea from "./components/ReviewArea.comp";
 
 function App() {
     const [code, setCode] = useState(`const add = () => a + b;`);
@@ -50,43 +48,13 @@ function App() {
         <>
             <main>
                 <div className="left">
-                    <div className="code">
-                        <Editor
-                            value={code}
-                            onValueChange={(code) => setCode(code)}
-                            padding={10}
-                            highlight={(code) =>
-                                Prism.highlight(
-                                    code,
-                                    Prism.languages.javascript,
-                                    "javascript"
-                                )
-                            }
-                            style={{
-                                fontFamily:
-                                    '"Fira code", "Fira Mono", monospace',
-                                fontSize: 16,
-                                border: "1px solid #ddd",
-                                borderRadius: "5px",
-                                height: "100%",
-                                width: "100%",
-                                color: "#f8f8f2",
-                            }}
-                        />
-                    </div>
+                    <EditorArea code={code} setCode={setCode} />
                     <div className="review" onClick={reviewCode}>
                         Review
                     </div>
                 </div>
                 <div className="right">
-                    {reviewLoading && (
-                        <div className="loading">
-                            <BarLoader color="#fff" />
-                        </div>
-                    )}
-                    <Markdown rehypePlugins={[reHypeHighlight]}>
-                        {review}
-                    </Markdown>
+                    <ReviewArea review={review} reviewLoading={reviewLoading} />
                 </div>
             </main>
         </>
