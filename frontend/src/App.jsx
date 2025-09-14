@@ -15,30 +15,36 @@ import Editor from "react-simple-code-editor";
 import Markdown from "react-markdown";
 import reHypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
-import "prismjs/themes/prism-tomorrow.css";
 import Prism from "prismjs";
-
+import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/components/prism-jsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { BarLoader } from "react-spinners";
 
 function App() {
-    const [code, setCode] = useState(`function sum() {
-    return a + b;
-}
-`);
+    const [code, setCode] = useState(`const add = () => a + b;`);
     const [review, setReview] = useState("");
+    const [reviewLoading, setReviewLoading] = useState(false);
 
     const reviewCode = async () => {
-        const response = await axios.post(
-            `http://localhost:3000/ai/get-review`,
-            { code }
-        );
-        setReview(response.data);
+        try {
+            setReviewLoading(true);
+            setReview("");
+            const response = await axios.post(
+                `http://localhost:3000/ai/get-review`,
+                { code }
+            );
+            setReview(response.data);
+            setReviewLoading(false);
+        } catch (err) {
+            if (err && err.status === 503) {
+                setReviewLoading(false);
+                setReview(
+                    "Gemini is overloaded right now. Please try again later."
+                );
+            }
+        }
     };
-
-    useEffect(() => {
-        Prism.highlightAll();
-    }, []);
 
     return (
         <>
@@ -48,6 +54,7 @@ function App() {
                         <Editor
                             value={code}
                             onValueChange={(code) => setCode(code)}
+                            padding={10}
                             highlight={(code) =>
                                 Prism.highlight(
                                     code,
@@ -55,7 +62,6 @@ function App() {
                                     "javascript"
                                 )
                             }
-                            padding={10}
                             style={{
                                 fontFamily:
                                     '"Fira code", "Fira Mono", monospace',
@@ -73,6 +79,11 @@ function App() {
                     </div>
                 </div>
                 <div className="right">
+                    {reviewLoading && (
+                        <div className="loading">
+                            <BarLoader color="#fff" />
+                        </div>
+                    )}
                     <Markdown rehypePlugins={[reHypeHighlight]}>
                         {review}
                     </Markdown>
