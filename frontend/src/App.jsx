@@ -29,7 +29,7 @@ function App() {
             setReviewLoading(true);
             setReview("");
             const response = await axios.post(
-                `http://localhost:3000/ai/get-review`,
+                `https://ai-code-review-8bqm.onrender.com/ai/get-review`,
                 { code }
             );
             setReview(response.data);
